@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#160a18}
+input,select,button,textarea{font-family:inherit}
+select option{color:#160a18;background:#fff}
+::placeholder{color:#8d7488}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-screen-label="EventPro" style="--bg:#160a18;--card:#241129;--card2:#2c1633;--line:rgba(255,255,255,.10);--ink:#f8eef5;--mut:#bda3b8;--pink:#ff5c93;--vio:#b56bff;--cyan:#4fd6e0;min-height:100vh;color:var(--ink);font-family:'Manrope',-apple-system,sans-serif;background:radial-gradient(900px 620px at 10% -8%,rgba(255,92,147,.20),transparent 60%),radial-gradient(820px 600px at 96% -4%,rgba(181,107,255,.18),transparent 55%),var(--bg)">
+
+<sc-if value="{{ notLanding }}">
+<div style="position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 28px;background:rgba(22,10,24,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)">
+  <div onClick="{{ onHome }}" style="cursor:pointer;display:flex;align-items:center;gap:10px">
+    <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--pink),var(--vio))"></div>
+    <span style="font-family:'Archivo';font-weight:800;font-size:19px;letter-spacing:-.02em">EventPro</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end">
+    <sc-for list="{{ steps }}" as="step" hint-placeholder-count="4">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;font-family:'Archivo';background:{{ step.dotBg }};color:{{ step.dotColor }};border:1px solid {{ step.dotBorder }}">{{ step.n }}</div>
+        <span style="font-size:12.5px;font-weight:600;color:{{ step.labelColor }}">{{ step.label }}</span>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Landing" style="animation:fadeUp .5s ease both;min-height:100vh;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:10px;padding:26px 30px">
+    <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--pink),var(--vio))"></div>
+    <span style="font-family:'Archivo';font-weight:800;font-size:21px;letter-spacing:-.02em">EventPro</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 24px 90px;gap:26px">
+    <div style="font-size:13px;font-weight:800;letter-spacing:.24em;color:var(--pink)">MÚSICA · TEATRO · CINE</div>
+    <h1 style="margin:0;font-family:'Archivo';font-weight:900;font-size:clamp(42px,7.4vw,88px);line-height:.97;letter-spacing:-.035em;max-width:15ch;background:linear-gradient(118deg,#ffffff 28%,var(--pink) 66%,var(--vio));-webkit-background-clip:text;background-clip:text;color:transparent">Viví los eventos que no te querés perder.</h1>
+    <p style="margin:0;max-width:58ch;font-size:18px;line-height:1.62;color:var(--mut)">EventPro es la plataforma para descubrir y comprar entradas a los mejores conciertos, obras de teatro y estrenos de cine. Comprá en segundos y recibí tu entrada con código QR al instante.</p>
+    <button onClick="{{ onVerEventos }}" style="margin-top:6px;cursor:pointer;border:none;font-family:'Archivo';font-weight:800;font-size:18px;letter-spacing:-.01em;color:#fff;padding:18px 46px;border-radius:999px;background:linear-gradient(135deg,var(--pink),var(--vio));box-shadow:0 16px 44px -12px rgba(255,92,147,.65);transition:transform .15s ease,box-shadow .15s ease" style-hover="transform:translateY(-2px);box-shadow:0 22px 54px -12px rgba(255,92,147,.75)">Ver eventos</button>
+  </div>
+  <div style="border-top:1px solid var(--line);padding:18px 30px;display:flex;gap:34px;justify-content:center;flex-wrap:wrap;color:var(--mut);font-size:13px;font-weight:600">
+    <span>Entradas con QR instantáneo</span><span>Pago con QR, tarjeta o efectivo</span><span>Créditos y saldo EventPro</span>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isEvents }}">
+<div data-screen-label="Eventos" style="animation:fadeUp .45s ease both;max-width:1180px;margin:0 auto;padding:42px 28px 96px">
+  <h2 style="font-family:'Archivo';font-weight:900;font-size:clamp(32px,4.6vw,54px);letter-spacing:-.035em;margin:0 0 6px">Eventos</h2>
+  <p style="color:var(--mut);margin:0 0 36px;font-size:16px">Elegí tu evento, seleccioná fecha y horario, y comprá tus entradas.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(322px,1fr));gap:24px">
+    <sc-for list="{{ events }}" as="item" hint-placeholder-count="6">
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .15s ease,transform .15s ease" style-hover="border-color:rgba(255,92,147,.55);transform:translateY(-3px)">
+        <div style="position:relative;height:190px;overflow:hidden;{{ item.posterStyle }}">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(12,4,16,.55) 100%)"></div>
+          <span style="position:absolute;top:14px;left:14px;font-size:10.5px;font-weight:800;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,.38);padding:5px 10px;border-radius:999px;backdrop-filter:blur(4px)">{{ item.category }}</span>
+        </div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:14px;flex:1">
+          <div>
+            <h3 style="font-family:'Archivo';font-weight:800;font-size:20px;letter-spacing:-.01em;margin:0 0 5px;line-height:1.1">{{ item.title }}</h3>
+            <div style="color:var(--mut);font-size:13.5px">{{ item.venue }}</div>
+          </div>
+          <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
+            <label style="font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--mut)">FECHA Y HORARIO</label>
+            <div style="position:relative">
+              <select value="{{ item.selectedDate }}" onChange="{{ item.onSelect }}" style="width:100%;padding:13px 38px 13px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--ink);font-size:14.5px;font-weight:600;cursor:pointer;appearance:none;outline:none" style-focus="border-color:var(--pink)">
+                <option value="">Elegí fecha y horario</option>
+                <sc-for list="{{ item.dates }}" as="d" hint-placeholder-count="3">
+                  <option value="{{ d.iso }}">{{ d.label }}</option>
+                </sc-for>
+              </select>
+              <span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--mut);font-size:11px">▼</span>
+            </div>
+            <sc-if value="{{ item.showBuy }}">
+              <button onClick="{{ item.onBuy }}" style="animation:pop .25s ease both;cursor:pointer;border:none;font-family:'Archivo';font-weight:800;font-size:15px;color:#fff;padding:13px;border-radius:12px;background:linear-gradient(135deg,var(--pink),var(--vio));box-shadow:0 10px 26px -12px rgba(255,92,147,.7)">Comprar</button>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPurchase }}">
+<div data-screen-label="Compra" style="animation:fadeUp .45s ease both;max-width:1040px;margin:0 auto;padding:30px 28px 96px">
+  <button onClick="{{ onBackEvents }}" style="background:none;border:none;color:var(--mut);font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin-bottom:18px">← Volver a eventos</button>
+
+  <div style="display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:18px">
+    <div style="width:70px;height:70px;border-radius:12px;flex-shrink:0;{{ evPosterStyle }}"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--pink);margin-bottom:3px">{{ evCategory }}</div>
+      <div style="font-family:'Archivo';font-weight:800;font-size:20px;letter-spacing:-.01em;line-height:1.1">{{ evTitle }}</div>
+      <div style="color:var(--mut);font-size:13px;margin-top:3px">{{ evVenue }} · {{ evDateLabel }}</div>
+    </div>
+    <span style="font-size:11px;color:var(--mut);background:rgba(255,255,255,.05);border:1px solid var(--line);padding:6px 11px;border-radius:999px;white-space:nowrap">Selección fija</span>
+  </div>
+
+  <sc-if value="{{ dniLooked }}">
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;background:linear-gradient(135deg,rgba(255,92,147,.16),rgba(181,107,255,.16));border:1px solid rgba(255,92,147,.4);border-radius:16px;padding:16px 20px;margin-bottom:22px;animation:pop .3s ease both">
+      <div style="display:flex;flex-direction:column">
+        <span style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--mut)">CRÉDITOS</span>
+        <span style="font-family:'Archivo';font-weight:900;font-size:26px;letter-spacing:-.02em">{{ dniCreditsFmt }} <span style="font-size:14px;font-weight:700;color:var(--mut)">puntos</span></span>
+      </div>
+      <div style="width:1px;height:38px;background:var(--line)"></div>
+      <div style="display:flex;flex-direction:column">
+        <span style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--mut)">SALDO</span>
+        <span style="font-family:'Archivo';font-weight:900;font-size:26px;letter-spacing:-.02em">{{ dniSaldoFmt }}</span>
+      </div>
+      <span style="margin-left:auto;font-size:12.5px;color:var(--mut);max-width:30ch">{{ perksHint }}</span>
+    </div>
+  </sc-if>
+
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:22px">
+
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px">
+        <h3 style="font-family:'Archivo';font-weight:800;font-size:18px;margin:0 0 16px;letter-spacing:-.01em">Tus datos</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;font-weight:700;color:var(--mut)">Nombre</label>
+            <input value="{{ buyer.nombre }}" onInput="{{ onNombre }}" placeholder="Juan" style="width:100%;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);font-size:15px;outline:none" style-focus="border-color:var(--pink)" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;font-weight:700;color:var(--mut)">Apellido</label>
+            <input value="{{ buyer.apellido }}" onInput="{{ onApellido }}" placeholder="Pérez" style="width:100%;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);font-size:15px;outline:none" style-focus="border-color:var(--pink)" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;font-weight:700;color:var(--mut)">DNI</label>
+            <input value="{{ buyer.dni }}" onInput="{{ onDni }}" inputmode="numeric" placeholder="46349266" style="width:100%;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);font-size:15px;outline:none;letter-spacing:.06em" style-focus="border-color:var(--pink)" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;font-weight:700;color:var(--mut)">Teléfono</label>
+            <input value="{{ buyer.telefono }}" onInput="{{ onTelefono }}" placeholder="11 2345 6789" style="width:100%;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);font-size:15px;outline:none" style-focus="border-color:var(--pink)" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;grid-column:1 / -1">
+            <label style="font-size:12px;font-weight:700;color:var(--mut)">Email</label>
+            <input value="{{ buyer.email }}" onInput="{{ onEmail }}" type="email" placeholder="juan@email.com" style="width:100%;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);font-size:15px;outline:none" style-focus="border-color:var(--pink)" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;grid-column:1 / -1">
+            <label style="font-size:12px;font-weight:700;color:var(--mut)">Dirección</label>
+            <input value="{{ buyer.direccion }}" onInput="{{ onDireccion }}" placeholder="Av. Corrientes 1234, CABA" style="width:100%;padding:12px 14px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);font-size:15px;outline:none" style-focus="border-color:var(--pink)" />
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px">
+        <h3 style="font-family:'Archivo';font-weight:800;font-size:18px;margin:0 0 16px;letter-spacing:-.01em">Entradas</h3>
+        <div style="font-size:11px;font-weight:800;letter-spacing:.13em;color:var(--mut);margin-bottom:14px">TIPO DE ENTRADA</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+
+          <div style="display:flex;align-items:center;gap:14px;border:1.5px solid;border-radius:14px;padding:15px 16px;transition:all .15s ease;{{ cardStyleGeneral }}">
+            <div style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;{{ iconStyleGeneral }}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"></path></svg></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink)">General</div>
+              <div style="font-size:12.5px;color:var(--mut);margin-top:2px">87 disponibles · Zona campo</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:'Archivo';font-weight:800;font-size:17px;color:var(--ink)">$8.500</div>
+              <div style="font-size:11px;color:var(--mut)">por entrada</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;flex-shrink:0">
+              <button onClick="{{ onDecGeneral }}" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0">−</button>
+              <span style="font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink);min-width:16px;text-align:center">{{ qGeneral }}</span>
+              <button onClick="{{ onIncGeneral }}" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0">+</button>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:14px;border:1.5px solid;border-radius:14px;padding:15px 16px;transition:all .15s ease;{{ cardStyleVIP }}">
+            <div style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;{{ iconStyleVIP }}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.4 6 .9-4.3 4.2 1 6-5.4-2.8-5.4 2.8 1-6L5.3 9.3l6-.9z"></path></svg></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink)">VIP</div>
+              <div style="font-size:12.5px;color:var(--mut);margin-top:2px">23 disponibles · Zona preferencial</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:'Archivo';font-weight:800;font-size:17px;color:var(--ink)">$18.500</div>
+              <div style="font-size:11px;color:var(--mut)">por entrada</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;flex-shrink:0">
+              <button onClick="{{ onDecVIP }}" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0">−</button>
+              <span style="font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink);min-width:16px;text-align:center">{{ qVIP }}</span>
+              <button onClick="{{ onIncVIP }}" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0">+</button>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:14px;border:1.5px solid;border-radius:14px;padding:15px 16px;transition:all .15s ease;{{ cardStylePlatea }}">
+            <div style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;{{ iconStylePlatea }}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2 2 2 0 0 0 0-4z"></path><path d="M14 7v10"></path></svg></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink)">Platea</div>
+              <div style="font-size:12.5px;color:var(--mut);margin-top:2px">38 disponibles · Zona numerada</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-family:'Archivo';font-weight:800;font-size:17px;color:var(--ink)">$23.000</div>
+              <div style="font-size:11px;color:var(--mut)">por entrada</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;flex-shrink:0">
+              <button onClick="{{ onDecPlatea }}" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0">−</button>
+              <span style="font-family:'Archivo';font-weight:800;font-size:16px;color:var(--ink);min-width:16px;text-align:center">{{ qPlatea }}</span>
+              <button onClick="{{ onIncPlatea }}" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:grid;place-items:center;line-height:1;padding:0">+</button>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;background:rgba(255,255,255,.02)">
+            <div style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;background:rgba(255,255,255,.05);color:var(--mut)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg></div>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Archivo';font-weight:800;font-size:16px;color:var(--mut)">Entrada virtual (streaming)</div>
+              <div style="font-size:12.5px;color:#e8833a;font-weight:700;margin-top:2px">Próximamente</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:13px;color:var(--mut);font-weight:700">próximamente</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="position:sticky;top:84px;background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:22px">
+      <h3 style="font-family:'Archivo';font-weight:800;font-size:17px;margin:0 0 16px;letter-spacing:-.01em">Resumen</h3>
+      <sc-if value="{{ hasTickets }}">
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px">
+          <sc-for list="{{ summaryLines }}" as="ln" hint-placeholder-count="1">
+            <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:var(--mut)">{{ ln.name }} × {{ ln.qty }}</span><span style="font-weight:700">{{ ln.lineFmt }}</span></div>
+          </sc-for>
+          <div style="height:1px;background:var(--line);margin:6px 0"></div>
+          <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:var(--mut)">Subtotal entradas</span><span style="font-weight:700">{{ ticketSubtotalFmt }}</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:var(--mut)">Cargo por proximidad · {{ proxLabel }} (+{{ proxPctTxt }})</span><span style="font-weight:700">+{{ proxAmtFmt }}</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
+          <span style="font-weight:700;font-size:15px">Total</span>
+          <span style="font-family:'Archivo';font-weight:900;font-size:28px;letter-spacing:-.02em">{{ orderTotalFmt }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noTickets }}">
+        <p style="font-size:13.5px;color:var(--mut);margin:0">Agregá entradas con los botones + para ver el total.</p>
+      </sc-if>
+      <button onClick="{{ onContinuePay }}" style="width:100%;margin-top:18px;border:none;font-family:'Archivo';font-weight:800;font-size:16px;padding:15px;border-radius:13px;transition:all .15s ease;{{ continueStyle }}">Continuar al pago</button>
+      <sc-if value="{{ showContinueHint }}">
+        <p style="font-size:12px;color:var(--mut);text-align:center;margin:10px 0 0">{{ continueHintText }}</p>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPayment }}">
+<div data-screen-label="Pago" style="animation:fadeUp .45s ease both;max-width:720px;margin:0 auto;padding:34px 28px 96px">
+  <button onClick="{{ onBackPurchase }}" style="background:none;border:none;color:var(--mut);font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin-bottom:18px">← Volver</button>
+  <h2 style="font-family:'Archivo';font-weight:900;font-size:clamp(28px,4vw,42px);letter-spacing:-.03em;margin:0 0 4px">Método de pago</h2>
+  <p style="color:var(--mut);margin:0 0 26px;font-size:16px">Total a pagar: <span style="color:var(--ink);font-weight:800;font-family:'Archivo'">{{ payTotalFmt }}</span></p>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:26px">
+    <sc-for list="{{ methods }}" as="m" hint-placeholder-count="3">
+      <div onClick="{{ m.onSelect }}" style="cursor:pointer;display:flex;align-items:center;gap:16px;border:1.5px solid var(--line);border-radius:15px;padding:18px;transition:all .15s ease;{{ m.cardStyle }}">
+        <div style="width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-family:'Archivo';font-weight:800;font-size:17px;background:linear-gradient(135deg,var(--pink),var(--vio));color:#fff;flex-shrink:0">{{ m.badge }}</div>
+        <div style="flex:1">
+          <div style="font-family:'Archivo';font-weight:800;font-size:17px">{{ m.label }}</div>
+          <div style="font-size:13px;color:var(--mut);margin-top:2px">{{ m.desc }}</div>
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;border:2px solid {{ m.radioBorder }};display:grid;place-items:center"><div style="width:11px;height:11px;border-radius:50%;background:{{ m.radioFill }}"></div></div>
+      </div>
+    </sc-for>
+  </div>
+  <button onClick="{{ onConfirmPayment }}" style="width:100%;border:none;font-family:'Archivo';font-weight:800;font-size:17px;padding:16px;border-radius:14px;transition:all .15s ease;{{ payStyle }}">Confirmar pago</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isConfirmation }}">
+<div data-screen-label="Confirmacion" style="animation:fadeUp .45s ease both;max-width:760px;margin:0 auto;padding:44px 28px 96px;text-align:center">
+  <div style="width:74px;height:74px;border-radius:50%;margin:0 auto 22px;display:grid;place-items:center;background:linear-gradient(135deg,var(--pink),var(--vio));box-shadow:0 14px 40px -12px rgba(255,92,147,.7);font-size:36px;color:#fff;animation:pop .4s ease both">✓</div>
+  <h2 style="font-family:'Archivo';font-weight:900;font-size:clamp(30px,4.4vw,46px);letter-spacing:-.03em;margin:0 0 10px">¡Compra confirmada!</h2>
+  <p style="color:var(--mut);font-size:16px;margin:0 auto 6px;max-width:52ch;line-height:1.55">Te enviamos la confirmación y tus entradas a <span style="color:var(--ink);font-weight:700">{{ confEmail }}</span>.</p>
+  <p style="color:var(--mut);font-size:14px;margin:0 0 8px">{{ confEventTitle }} · {{ evDateLabel }}</p>
+  <sc-if value="{{ perksUsedShow }}">
+    <p style="display:inline-block;font-size:13px;color:var(--ink);background:rgba(255,92,147,.14);border:1px solid rgba(255,92,147,.35);padding:8px 16px;border-radius:999px;margin:6px 0 0">{{ perksUsedText }}</p>
+  </sc-if>
+  <div style="display:flex;flex-direction:column;gap:14px;margin:30px 0 22px;text-align:left">
+    <sc-for list="{{ tickets }}" as="ticket" hint-placeholder-count="0">
+      <div style="background:#fff;color:#160a18;border-radius:16px;padding:18px;display:flex;gap:18px;align-items:center;box-shadow:0 16px 40px -22px rgba(0,0,0,.6)">
+        <div style="{{ ticket.imgStyle }}"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:#9a6b85">ENTRADA {{ ticket.n }} DE {{ ticketCount }}</div>
+          <div style="font-family:'Archivo';font-weight:800;font-size:19px;margin:3px 0 2px;letter-spacing:-.01em">{{ ticket.typeLabel }} · {{ confEventTitle }}</div>
+          <div style="font-size:13.5px;color:#5c4452">{{ ticket.seat }}</div>
+          <div style="font-size:13px;color:#5c4452;margin-top:1px">{{ evDateLabel }}</div>
+          <div style="font-family:'Manrope';font-size:12px;font-weight:700;letter-spacing:.05em;color:#160a18;margin-top:8px;background:#f1e7ee;display:inline-block;padding:4px 10px;border-radius:7px">{{ ticket.code }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:baseline;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;text-align:left">
+    <span style="font-weight:700;font-size:15px">Total pagado</span>
+    <span style="font-family:'Archivo';font-weight:900;font-size:26px;letter-spacing:-.02em">{{ totalPaidFmt }}</span>
+  </div>
+  <button onClick="{{ onReset }}" style="margin-top:26px;cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font-family:'Archivo';font-weight:800;font-size:15px;padding:14px 32px;border-radius:999px">Volver al inicio</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showRedeemModal }}">
+<div style="position:fixed;inset:0;z-index:50;background:rgba(10,4,12,.66);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:overlayIn .2s ease both">
+  <div style="background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:26px;max-width:440px;width:100%;animation:pop .25s ease both">
+    <h3 style="font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:-.02em;margin:0 0 6px">Tenés beneficios disponibles</h3>
+    <p style="color:var(--mut);font-size:14.5px;margin:0 0 20px">¿Querés usar tu saldo o créditos en esta compra?</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-if value="{{ hasSaldo }}">
+        <div onClick="{{ onToggleBalance }}" style="cursor:pointer;display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:14px;padding:15px;transition:all .15s ease;{{ balToggleStyle }}">
+          <div style="width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:14px;color:#fff;background:{{ balCheckBg }};border:1.5px solid {{ balCheckBorder }};flex-shrink:0">{{ balCheck }}</div>
+          <div style="flex:1"><div style="font-weight:800;font-size:15px">Usar saldo</div><div style="font-size:13px;color:var(--mut)">Disponible: {{ modalSaldoFmt }}</div></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasCredits }}">
+        <div onClick="{{ onToggleCredits }}" style="cursor:pointer;display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:14px;padding:15px;transition:all .15s ease;{{ credToggleStyle }}">
+          <div style="width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:14px;color:#fff;background:{{ credCheckBg }};border:1.5px solid {{ credCheckBorder }};flex-shrink:0">{{ credCheck }}</div>
+          <div style="flex:1"><div style="font-weight:800;font-size:15px">Usar créditos</div><div style="font-size:13px;color:var(--mut)">{{ modalCredits }} puntos · equivale a {{ modalCreditsValueFmt }}</div></div>
+        </div>
+      </sc-if>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin:20px 0 4px;padding-top:16px;border-top:1px solid var(--line)">
+      <span style="font-weight:700;font-size:15px">Nuevo total</span>
+      <span style="font-family:'Archivo';font-weight:900;font-size:26px;letter-spacing:-.02em">{{ modalNewTotalFmt }}</span>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:18px">
+      <button onClick="{{ onSkipRedeem }}" style="flex:1;cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font-family:'Archivo';font-weight:800;font-size:15px;padding:14px;border-radius:13px">No, gracias</button>
+      <button onClick="{{ onApplyRedeem }}" style="flex:1;cursor:pointer;border:none;color:#fff;font-family:'Archivo';font-weight:800;font-size:15px;padding:14px;border-radius:13px;background:linear-gradient(135deg,var(--pink),var(--vio))">Aplicar y confirmar</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentPrimary&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#ff5c93&quot;,&quot;options&quot;:[&quot;#ff5c93&quot;,&quot;#ff7a3d&quot;,&quot;#4fd6e0&quot;,&quot;#b56bff&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estilo&quot;},&quot;accentSecondary&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#b56bff&quot;,&quot;options&quot;:[&quot;#b56bff&quot;,&quot;#5b8def&quot;,&quot;#ff7a3d&quot;,&quot;#4fd6e0&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estilo&quot;},&quot;creditPesoValue&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:1,&quot;max&quot;:100,&quot;unit&quot;:&quot;$/punto&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Lógica&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.rootRef = React.createRef();
+    this.EVENTS = [
+      {id:'e1', title:'Lumineon Live', venue:'Estadio Vélez · Buenos Aires', category:'MÚSICA', initial:'L', hue:330, poster:'uploads/pasted-1782672681940-0.png', dates:[
+        {iso:'2026-06-30', label:'Mar 30 Jun · 21:00'},
+        {iso:'2026-07-10', label:'Vie 10 Jul · 21:00'},
+        {iso:'2026-07-25', label:'Sáb 25 Jul · 20:30'}]},
+      {id:'e2', title:'Nocturna Fest', venue:'Hipódromo de Palermo · Buenos Aires', category:'MÚSICA', initial:'N', hue:285, poster:'uploads/pasted-1782672705478-0.png', dates:[
+        {iso:'2026-07-04', label:'Sáb 04 Jul · 22:00'},
+        {iso:'2026-07-18', label:'Sáb 18 Jul · 22:00'},
+        {iso:'2026-08-08', label:'Sáb 08 Ago · 22:00'}]},
+      {id:'e3', title:'El Jardín de los Espejos', venue:'Teatro Colón · Buenos Aires', category:'TEATRO', initial:'J', hue:200, poster:'uploads/pasted-1782672698325-0.png', dates:[
+        {iso:'2026-06-29', label:'Lun 29 Jun · 20:00'},
+        {iso:'2026-07-12', label:'Dom 12 Jul · 19:00'},
+        {iso:'2026-08-02', label:'Dom 02 Ago · 19:00'}]},
+      {id:'e4', title:'Tango Eterno', venue:'Teatro Gran Rex · Buenos Aires', category:'TEATRO', initial:'T', hue:24, poster:'uploads/pasted-1782672725814-0.png', dates:[
+        {iso:'2026-07-05', label:'Dom 05 Jul · 18:00'},
+        {iso:'2026-07-06', label:'Lun 06 Jul · 21:00'},
+        {iso:'2026-07-19', label:'Dom 19 Jul · 18:00'}]},
+      {id:'e5', title:'Después del Eclipse', venue:'Cine Gaumont · Buenos Aires', category:'CINE', initial:'E', hue:255, poster:'uploads/pasted-1782672753964-0.png', dates:[
+        {iso:'2026-06-28', label:'Dom 28 Jun · 16:00'},
+        {iso:'2026-07-01', label:'Mié 01 Jul · 19:30'},
+        {iso:'2026-07-03', label:'Vie 03 Jul · 22:00'}]},
+      {id:'e6', title:'Ciclo Noir Retro', venue:'Sala Lugones · Buenos Aires', category:'CINE', initial:'C', hue:158, poster:'uploads/pasted-1782672692929-0.png', dates:[
+        {iso:'2026-07-15', label:'Mié 15 Jul · 20:00'},
+        {iso:'2026-07-22', label:'Mié 22 Jul · 20:00'},
+        {iso:'2026-08-12', label:'Mié 12 Ago · 20:00'}]}
+    ];
+    this.DNI_DB = { '46349266': {credits:1000, saldo:15000} };
+    this.TYPES = [
+      {key:'General', label:'General', price:8500,  avail:87, zone:'Zona campo'},
+      {key:'VIP',     label:'VIP',     price:18500, avail:23, zone:'Zona preferencial'},
+      {key:'Platea',  label:'Platea',  price:23000, avail:38, zone:'Zona numerada'}
+    ];
+  }
+  state = {
+    screen:'landing', cardDates:{}, selectedEventId:null, selectedDateIso:null,
+    buyer:{nombre:'',apellido:'',dni:'',email:'',telefono:'',direccion:''},
+    quantities:{General:0, VIP:0, Platea:0},
+    paymentMethod:'', showRedeemModal:false,
+    useBalance:false, useCredits:false, tickets:[], lastTotals:null
+  };
+
+  componentDidMount(){ this.applyAccents(); }
+  componentDidUpdate(){ this.applyAccents(); }
+  applyAccents(){
+    const el = this.rootRef.current; if(!el) return;
+    if(this.props.accentPrimary) el.style.setProperty('--pink', this.props.accentPrimary);
+    if(this.props.accentSecondary) el.style.setProperty('--vio', this.props.accentSecondary);
+  }
+
+  fmt(n){ return '$' + Math.round(n).toLocaleString('es-AR'); }
+  go(screen){ this.setState({screen}); if(typeof window!=='undefined') window.scrollTo(0,0); }
+  creditValue(){ return this.props.creditPesoValue || 10; }
+  dniInfo(){ return this.DNI_DB[this.state.buyer.dni] || {credits:0, saldo:0}; }
+  selectedEvent(){ return this.EVENTS.find(e=>e.id===this.state.selectedEventId) || null; }
+  dateLabel(){ const ev=this.selectedEvent(); if(!ev) return ''; const f=ev.dates.find(d=>d.iso===this.state.selectedDateIso); return f?f.label:''; }
+  typeDef(key){ return this.TYPES.find(t=>t.key===key); }
+  bump(key, delta){
+    this.setState(st=>{
+      const def=this.typeDef(key), max=Math.min(8, def?def.avail:8);
+      const cur=st.quantities[key]||0, n=Math.max(0, Math.min(max, cur+delta));
+      return {quantities:{...st.quantities,[key]:n}};
+    });
+  }
+
+  daysUntil(){
+    const iso=this.state.selectedDateIso; if(!iso) return 30;
+    const p=iso.split('-').map(Number); const ev=new Date(p[0],p[1]-1,p[2]);
+    const today=new Date(2026,5,27);
+    return Math.max(0, Math.ceil((ev-today)/86400000));
+  }
+  proxInfo(){
+    const d=this.daysUntil();
+    if(d<=7) return {pct:0.30, label:'faltan '+d+' días · alta demanda'};
+    if(d<=30) return {pct:0.15, label:'faltan '+d+' días'};
+    return {pct:0.05, label:'faltan '+d+' días'};
+  }
+  breakdown(){
+    const q=this.state.quantities, lines=[];
+    let subtotal=0, count=0;
+    this.TYPES.forEach(d=>{
+      const n=q[d.key]||0;
+      if(n>0){ const lt=n*d.price; subtotal+=lt; count+=n; lines.push({key:d.key, name:d.label, qty:n, lineFmt:this.fmt(lt)}); }
+    });
+    const pr=this.proxInfo();
+    const proxAmt=Math.round(subtotal*pr.pct);
+    return {lines, subtotal, count, pr, proxAmt, orderTotal:subtotal+proxAmt};
+  }
+  totals(useB, useC){
+    const base=this.breakdown().orderTotal, info=this.dniInfo();
+    const creditDiscount = useC ? Math.min(info.credits*this.creditValue(), base) : 0;
+    const balanceDiscount = useB ? Math.min(info.saldo, base-creditDiscount) : 0;
+    return {subtotal:base, creditDiscount, balanceDiscount, total:base-creditDiscount-balanceDiscount};
+  }
+  formValid(){
+    const b=this.state.buyer;
+    return !!(b.nombre && b.apellido && b.dni.length===8 && b.email.includes('@') && b.telefono && b.direccion);
+  }
+  canContinue(){ return this.formValid() && this.breakdown().count>0; }
+
+  prng(seed){ let a=seed>>>0; return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  makeQR(text){
+    const N=25, s=6, m=2;
+    let h=2166136261>>>0; for(let i=0;i<text.length;i++){ h^=text.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+    const rnd=this.prng(h);
+    const corners=[[0,0],[0,N-7],[N-7,0]];
+    const finderAt=(r,c)=>{ for(const cn of corners){ if(r>=cn[0]&&r<cn[0]+7&&c>=cn[1]&&c<cn[1]+7) return cn; } return null; };
+    const inSep=(r,c)=>{ for(const cn of corners){ if(r>=cn[0]-1&&r<=cn[0]+7&&c>=cn[1]-1&&c<=cn[1]+7){ if(!(r>=cn[0]&&r<cn[0]+7&&c>=cn[1]&&c<cn[1]+7)) return true; } } return false; };
+    let rects='';
+    for(let r=0;r<N;r++){ for(let c=0;c<N;c++){
+      const f=finderAt(r,c); let black=false;
+      if(f){ const rr=r-f[0], cc=c-f[1]; const border=(rr===0||rr===6||cc===0||cc===6); const inner=(rr>=2&&rr<=4&&cc>=2&&cc<=4); black=border||inner; }
+      else if(inSep(r,c)){ black=false; }
+      else { black = rnd()<0.46; }
+      if(black) rects+='<rect x="'+((c+m)*s)+'" y="'+((r+m)*s)+'" width="'+s+'" height="'+s+'"/>';
+    }}
+    const dim=(N+2*m)*s;
+    const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+dim+'" height="'+dim+'" viewBox="0 0 '+dim+' '+dim+'"><rect width="'+dim+'" height="'+dim+'" fill="#ffffff"/><g fill="#160a18">'+rects+'</g></svg>';
+    return 'data:image/svg+xml,'+encodeURIComponent(svg);
+  }
+  genCode(ev){
+    const r=()=>Math.random().toString(36).slice(2,6).toUpperCase();
+    return 'EVP-'+(ev?ev.initial:'X')+'-'+r()+'-'+r();
+  }
+  genSeat(def){
+    if(def.key==='General') return 'Zona campo · Acceso general';
+    const fila=2+Math.floor(Math.random()*18), asiento=1+Math.floor(Math.random()*28);
+    return def.zone+' · Fila '+fila+' · Asiento '+asiento;
+  }
+
+  finalize(useB, useC){
+    const ev=this.selectedEvent(), q=this.state.quantities, tickets=[];
+    let idx=0;
+    this.TYPES.forEach(def=>{
+      const n=q[def.key]||0;
+      for(let i=0;i<n;i++){ idx++; const code=this.genCode(ev); const qr=this.makeQR(code); tickets.push({n:idx, code, qr, imgStyle:{width:'118px',height:'118px',borderRadius:'9px',flexShrink:0,imageRendering:'pixelated',backgroundImage:'url('+qr+')',backgroundSize:'contain',backgroundPosition:'center',backgroundRepeat:'no-repeat',backgroundColor:'#ffffff'}, typeLabel:def.label, seat:this.genSeat(def)}); }
+    });
+    const lastTotals=this.totals(useB, useC);
+    this.setState({tickets, lastTotals, useBalance:useB, useCredits:useC, showRedeemModal:false, screen:'confirmation'});
+    if(typeof window!=='undefined') window.scrollTo(0,0);
+  }
+  onConfirmPayment(){
+    if(!this.state.paymentMethod) return;
+    const info=this.dniInfo();
+    if(info.credits>0 || info.saldo>0) this.setState({showRedeemModal:true});
+    else this.finalize(false, false);
+  }
+  reset(){
+    this.setState({ screen:'landing', cardDates:{}, selectedEventId:null, selectedDateIso:null,
+      buyer:{nombre:'',apellido:'',dni:'',email:'',telefono:'',direccion:''},
+      quantities:{General:0, VIP:0, Platea:0},
+      paymentMethod:'', showRedeemModal:false,
+      useBalance:false, useCredits:false, tickets:[], lastTotals:null });
+    if(typeof window!=='undefined') window.scrollTo(0,0);
+  }
+
+  renderVals(){
+    const s=this.state, info=this.dniInfo(), bd=this.breakdown(), pr=bd.pr;
+    const ev=this.selectedEvent();
+    const setBuyer=(field)=>(e)=>{ const v=e.target.value; this.setState(st=>({buyer:{...st.buyer,[field]:v}})); };
+    const onDni=(e)=>{ const v=e.target.value.replace(/\D/g,'').slice(0,8); this.setState(st=>({buyer:{...st.buyer,dni:v}})); };
+
+    const events=this.EVENTS.map(e=>{
+      const sel=s.cardDates[e.id]||'';
+      return { id:e.id, title:e.title, venue:e.venue, category:e.category, initial:e.initial, dates:e.dates,
+        posterStyle:'background-image:url('+e.poster+');background-size:cover;background-position:center',
+        selectedDate:sel, showBuy:!!sel,
+        onSelect:(ev2)=>{ const v=ev2.target.value; this.setState(st=>({cardDates:{...st.cardDates,[e.id]:v}})); },
+        onBuy:()=>{ const iso=this.state.cardDates[e.id]; this.setState({selectedEventId:e.id, selectedDateIso:iso, screen:'purchase'}); if(typeof window!=='undefined') window.scrollTo(0,0); }
+      };
+    });
+
+    const cardSel='background:rgba(255,92,147,.12);border-color:var(--pink)', cardDef='background:rgba(255,255,255,.03);border-color:var(--line)';
+    const iconSel='background:linear-gradient(135deg,var(--pink),var(--vio));color:#ffffff', iconDef='background:rgba(255,255,255,.06);color:var(--mut)';
+    const isSel=(k)=>(s.quantities[k]||0)>0;
+
+    const methodDefs=[
+      {key:'qr', label:'Pago con QR', desc:'Escaneá y pagá desde tu billetera virtual.', badge:'QR'},
+      {key:'card', label:'Tarjeta de crédito/débito', desc:'Visa, Mastercard, Amex y más.', badge:'TC'},
+      {key:'cash', label:'Efectivo', desc:'Pagá en puntos de pago habilitados.', badge:'$'}
+    ];
+    const methods=methodDefs.map(m=>{
+      const selected=s.paymentMethod===m.key;
+      return {...m, selected,
+        onSelect:()=>this.setState({paymentMethod:m.key}),
+        cardStyle: selected ? 'border-color:var(--pink);background:rgba(255,92,147,.1)' : 'border-color:var(--line)',
+        radioBorder: selected ? 'var(--pink)' : 'var(--mut)',
+        radioFill: selected ? 'var(--pink)' : 'transparent'
+      };
+    });
+
+    const formOk=this.formValid(), hasTickets=bd.count>0, can=formOk && hasTickets;
+    const enabledBtn='background:linear-gradient(135deg,var(--pink),var(--vio));color:#fff;cursor:pointer;box-shadow:0 12px 30px -12px rgba(255,92,147,.65)';
+    const disabledBtn='background:rgba(255,255,255,.07);color:var(--mut);cursor:not-allowed;box-shadow:none';
+    const hint = !hasTickets ? 'Elegí al menos una entrada para continuar.' : (!formOk ? 'Completá todos tus datos (DNI de 8 dígitos y email).' : '');
+
+    const mt=this.totals(s.useBalance, s.useCredits);
+    const lt=s.lastTotals;
+    let perksParts=[];
+    if(lt){
+      if(lt.creditDiscount>0) perksParts.push((lt.creditDiscount/this.creditValue())+' créditos ('+this.fmt(lt.creditDiscount)+')');
+      if(lt.balanceDiscount>0) perksParts.push(this.fmt(lt.balanceDiscount)+' de saldo');
+    }
+
+    return {
+      rootRef:this.rootRef,
+      isLanding:s.screen==='landing', isEvents:s.screen==='events', isPurchase:s.screen==='purchase',
+      isPayment:s.screen==='payment', isConfirmation:s.screen==='confirmation', notLanding:s.screen!=='landing',
+      steps:this.buildSteps(),
+      onVerEventos:()=>this.go('events'),
+      onHome:()=>this.go('landing'),
+      onBackEvents:()=>this.go('events'),
+      onBackPurchase:()=>this.go('purchase'),
+      onReset:()=>this.reset(),
+
+      events,
+
+      evTitle: ev?ev.title:'', evVenue: ev?ev.venue:'', evCategory: ev?ev.category:'',
+      evDateLabel:this.dateLabel(),
+      evPosterStyle: ev ? 'background-image:url('+ev.poster+');background-size:cover;background-position:center' : '',
+
+      buyer:s.buyer,
+      onNombre:setBuyer('nombre'), onApellido:setBuyer('apellido'), onDni:onDni,
+      onEmail:setBuyer('email'), onTelefono:setBuyer('telefono'), onDireccion:setBuyer('direccion'),
+
+      dniLooked: s.buyer.dni.length===8,
+      dniCreditsFmt:String(info.credits), dniSaldoFmt:this.fmt(info.saldo),
+      perksHint: (info.credits>0||info.saldo>0) ? 'Podés usarlos al elegir el método de pago.' : 'Esta cuenta no tiene créditos ni saldo disponible.',
+
+      qGeneral:s.quantities.General||0, qVIP:s.quantities.VIP||0, qPlatea:s.quantities.Platea||0,
+      onIncGeneral:()=>this.bump('General',1), onDecGeneral:()=>this.bump('General',-1),
+      onIncVIP:()=>this.bump('VIP',1), onDecVIP:()=>this.bump('VIP',-1),
+      onIncPlatea:()=>this.bump('Platea',1), onDecPlatea:()=>this.bump('Platea',-1),
+      cardStyleGeneral: isSel('General')?cardSel:cardDef, iconStyleGeneral: isSel('General')?iconSel:iconDef,
+      cardStyleVIP: isSel('VIP')?cardSel:cardDef, iconStyleVIP: isSel('VIP')?iconSel:iconDef,
+      cardStylePlatea: isSel('Platea')?cardSel:cardDef, iconStylePlatea: isSel('Platea')?iconSel:iconDef,
+
+      summaryLines:bd.lines, hasTickets, noTickets:!hasTickets,
+      ticketSubtotalFmt:this.fmt(bd.subtotal),
+      proxLabel:pr.label, proxPctTxt:Math.round(pr.pct*100)+'%', proxAmtFmt:this.fmt(bd.proxAmt),
+      orderTotalFmt:this.fmt(bd.orderTotal),
+      onContinuePay:()=>{ if(this.canContinue()) this.go('payment'); },
+      continueStyle: can?enabledBtn:disabledBtn, showContinueHint:!can, continueHintText:hint,
+
+      methods, payTotalFmt:this.fmt(bd.orderTotal),
+      onConfirmPayment:()=>this.onConfirmPayment(),
+      payStyle: s.paymentMethod?enabledBtn:disabledBtn,
+
+      showRedeemModal:s.showRedeemModal,
+      hasSaldo:info.saldo>0, hasCredits:info.credits>0,
+      modalSaldoFmt:this.fmt(info.saldo), modalCredits:String(info.credits), modalCreditsValueFmt:this.fmt(info.credits*this.creditValue()),
+      useBalance:s.useBalance, useCredits:s.useCredits,
+      onToggleBalance:()=>this.setState(st=>({useBalance:!st.useBalance})),
+      onToggleCredits:()=>this.setState(st=>({useCredits:!st.useCredits})),
+      modalNewTotalFmt:this.fmt(mt.total),
+      balToggleStyle: s.useBalance?'border-color:var(--pink);background:rgba(255,92,147,.12)':'border-color:var(--line)',
+      credToggleStyle: s.useCredits?'border-color:var(--pink);background:rgba(255,92,147,.12)':'border-color:var(--line)',
+      balCheck: s.useBalance?'✓':'', balCheckBg: s.useBalance?'var(--pink)':'transparent', balCheckBorder: s.useBalance?'var(--pink)':'var(--mut)',
+      credCheck: s.useCredits?'✓':'', credCheckBg: s.useCredits?'var(--pink)':'transparent', credCheckBorder: s.useCredits?'var(--pink)':'var(--mut)',
+      onApplyRedeem:()=>this.finalize(this.state.useBalance, this.state.useCredits),
+      onSkipRedeem:()=>this.finalize(false, false),
+
+      confEmail:s.buyer.email, confEventTitle: ev?ev.title:'',
+      tickets:s.tickets, ticketCount:s.tickets.length,
+      totalPaidFmt: lt?this.fmt(lt.total):'',
+      perksUsedShow: perksParts.length>0,
+      perksUsedText: perksParts.length ? ('Aplicaste '+perksParts.join(' y ')+'.') : ''
+    };
+  }
+
+  buildSteps(){
+    const order={events:1, purchase:2, payment:3, confirmation:4};
+    const cur=order[this.state.screen]||0;
+    const labels=['Eventos','Tus datos','Pago','Listo'];
+    return labels.map((label,i)=>{
+      const n=i+1, done=n<cur, active=n===cur;
+      return {
+        n: done?'✓':String(n), label,
+        dotBg: active?'linear-gradient(135deg,var(--pink),var(--vio))':(done?'rgba(255,92,147,.18)':'transparent'),
+        dotColor: active?'#fff':(done?'var(--pink)':'var(--mut)'),
+        dotBorder: active?'transparent':(done?'rgba(255,92,147,.4)':'var(--line)'),
+        labelColor: (active||done)?'var(--ink)':'var(--mut)'
+      };
+    });
+  }
+}
+</script>
+</body>
+</html>
