@@ -161,7 +161,10 @@ select option{color:#160a18;background:#fff}
       </div>
 
       <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px">
-        <h3 style="font-family:'Archivo';font-weight:800;font-size:18px;margin:0 0 16px;letter-spacing:-.01em">Entradas</h3>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px">
+          <h3 style="font-family:'Archivo';font-weight:800;font-size:18px;margin:0;letter-spacing:-.01em">Entradas</h3>
+          <button onClick="{{ onRefreshAvail }}" style="background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:700;cursor:pointer;padding:7px 13px;border-radius:999px;display:flex;align-items:center;gap:6px" style-hover="border-color:var(--pink);color:var(--ink)">↻ Actualizar disponibilidad</button>
+        </div>
         <div style="font-size:11px;font-weight:800;letter-spacing:.13em;color:var(--mut);margin-bottom:14px">TIPO DE ENTRADA</div>
         <div style="display:flex;flex-direction:column;gap:12px">
 
@@ -342,6 +345,39 @@ select option{color:#160a18;background:#fff}
 </div>
 </sc-if>
 
+<sc-if value="{{ showSoldOut }}">
+<div style="position:fixed;inset:0;z-index:50;background:rgba(10,4,12,.66);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:overlayIn .2s ease both">
+  <div style="background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:28px;max-width:420px;width:100%;text-align:center;animation:pop .25s ease both">
+    <div style="width:60px;height:60px;border-radius:50%;margin:0 auto 16px;display:grid;place-items:center;font-size:30px;color:#160a18;background:linear-gradient(135deg,#ffb347,#ff7a3d);box-shadow:0 12px 34px -12px rgba(255,122,61,.7)">!</div>
+    <h3 style="font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:-.02em;margin:0 0 8px">No hay entradas disponibles</h3>
+    <p style="color:var(--mut);font-size:14.5px;line-height:1.55;margin:0 0 22px">No quedan entradas para <span style="color:var(--ink);font-weight:700">{{ soldOutTitle }}</span> · {{ soldOutDateLabel }}. Probá con otra función u otro evento.</p>
+    <button onClick="{{ onDismissSoldOut }}" style="width:100%;cursor:pointer;border:none;color:#fff;font-family:'Archivo';font-weight:800;font-size:15px;padding:14px;border-radius:13px;background:linear-gradient(135deg,var(--pink),var(--vio))">Volver a eventos</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showPayError }}">
+<div style="position:fixed;inset:0;z-index:50;background:rgba(10,4,12,.66);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:overlayIn .2s ease both">
+  <div style="background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:28px;max-width:420px;width:100%;text-align:center;animation:pop .25s ease both">
+    <div style="width:60px;height:60px;border-radius:50%;margin:0 auto 16px;display:grid;place-items:center;font-size:28px;color:#fff;background:linear-gradient(135deg,#ff5c6c,#c33)">✕</div>
+    <h3 style="font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:-.02em;margin:0 0 8px">Pago rechazado</h3>
+    <p style="color:var(--mut);font-size:14.5px;line-height:1.55;margin:0 0 22px">{{ payErrorText }}</p>
+    <button onClick="{{ onDismissPayError }}" style="width:100%;cursor:pointer;border:none;color:#fff;font-family:'Archivo';font-weight:800;font-size:15px;padding:14px;border-radius:13px;background:linear-gradient(135deg,var(--pink),var(--vio))">Elegir otro método de pago</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showAvailChanged }}">
+<div style="position:fixed;inset:0;z-index:50;background:rgba(10,4,12,.66);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:overlayIn .2s ease both">
+  <div style="background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:28px;max-width:420px;width:100%;text-align:center;animation:pop .25s ease both">
+    <div style="width:60px;height:60px;border-radius:50%;margin:0 auto 16px;display:grid;place-items:center;font-size:30px;color:#160a18;background:linear-gradient(135deg,#ffb347,#ff7a3d);box-shadow:0 12px 34px -12px rgba(255,122,61,.7)">!</div>
+    <h3 style="font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:-.02em;margin:0 0 8px">La disponibilidad cambió</h3>
+    <p style="color:var(--mut);font-size:14.5px;line-height:1.55;margin:0 0 22px">Las entradas que seleccionaste ya no están disponibles para esta función. Elegí otra fecha para continuar.</p>
+    <button onClick="{{ onDismissAvail }}" style="width:100%;cursor:pointer;border:none;color:#fff;font-family:'Archivo';font-weight:800;font-size:15px;padding:14px;border-radius:13px;background:linear-gradient(135deg,var(--pink),var(--vio))">Elegir otra fecha</button>
+  </div>
+</div>
+</sc-if>
+
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;accentPrimary&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#ff5c93&quot;,&quot;options&quot;:[&quot;#ff5c93&quot;,&quot;#ff7a3d&quot;,&quot;#4fd6e0&quot;,&quot;#b56bff&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estilo&quot;},&quot;accentSecondary&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#b56bff&quot;,&quot;options&quot;:[&quot;#b56bff&quot;,&quot;#5b8def&quot;,&quot;#ff7a3d&quot;,&quot;#4fd6e0&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Estilo&quot;},&quot;creditPesoValue&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:1,&quot;max&quot;:100,&quot;unit&quot;:&quot;$/punto&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Lógica&quot;}}">
@@ -387,11 +423,13 @@ class Component extends DCLogic {
     buyer:{nombre:'',apellido:'',dni:'',email:'',telefono:'',direccion:''},
     quantities:{General:0, VIP:0, Platea:0},
     paymentMethod:'', showRedeemModal:false,
-    useBalance:false, useCredits:false, tickets:[], lastTotals:null
+    useBalance:false, useCredits:false, tickets:[], lastTotals:null,
+    soldOutNotice:null, paymentError:null, availChanged:false
   };
 
   componentDidMount(){ this.applyAccents(); }
   componentDidUpdate(){ this.applyAccents(); }
+  componentWillUnmount(){ this.clearAvailWatch(); }
   applyAccents(){
     const el = this.rootRef.current; if(!el) return;
     if(this.props.accentPrimary) el.style.setProperty('--pink', this.props.accentPrimary);
@@ -403,6 +441,19 @@ class Component extends DCLogic {
   creditValue(){ return this.props.creditPesoValue || 10; }
   dniInfo(){ return this.DNI_DB[this.state.buyer.dni] || {credits:0, saldo:0}; }
   selectedEvent(){ return this.EVENTS.find(e=>e.id===this.state.selectedEventId) || null; }
+  isSoldOut(eid,iso){ return eid==='e6' && iso==='2026-07-15'; }
+  isPayReject(eid,iso){ return eid==='e6' && iso==='2026-07-22'; }
+  isAvailChange(eid,iso){ return eid==='e6' && iso==='2026-08-12'; }
+  startAvailWatch(eid,iso){
+    this.clearAvailWatch();
+    if(this.isAvailChange(eid,iso)){
+      this._availTimer=setTimeout(()=>{ if(this.state.screen==='purchase') this.setState({availChanged:true}); }, 30000);
+    }
+  }
+  clearAvailWatch(){ if(this._availTimer){ clearTimeout(this._availTimer); this._availTimer=null; } }
+  refreshAvailability(){
+    if(this.isAvailChange(this.state.selectedEventId, this.state.selectedDateIso)) this.setState({availChanged:true});
+  }
   dateLabel(){ const ev=this.selectedEvent(); if(!ev) return ''; const f=ev.dates.find(d=>d.iso===this.state.selectedDateIso); return f?f.label:''; }
   typeDef(key){ return this.TYPES.find(t=>t.key===key); }
   bump(key, delta){
@@ -479,6 +530,10 @@ class Component extends DCLogic {
   }
 
   finalize(useB, useC){
+    if(this.isPayReject(this.state.selectedEventId, this.state.selectedDateIso)){
+      this.setState({showRedeemModal:false, paymentError:'Tu pago fue rechazado por el emisor de la tarjeta (fondos insuficientes). No se realizó ningún cargo.'});
+      return;
+    }
     const ev=this.selectedEvent(), q=this.state.quantities, tickets=[];
     let idx=0;
     this.TYPES.forEach(def=>{
@@ -496,11 +551,13 @@ class Component extends DCLogic {
     else this.finalize(false, false);
   }
   reset(){
+    this.clearAvailWatch();
     this.setState({ screen:'landing', cardDates:{}, selectedEventId:null, selectedDateIso:null,
       buyer:{nombre:'',apellido:'',dni:'',email:'',telefono:'',direccion:''},
       quantities:{General:0, VIP:0, Platea:0},
       paymentMethod:'', showRedeemModal:false,
-      useBalance:false, useCredits:false, tickets:[], lastTotals:null });
+      useBalance:false, useCredits:false, tickets:[], lastTotals:null,
+      soldOutNotice:null, paymentError:null, availChanged:false });
     if(typeof window!=='undefined') window.scrollTo(0,0);
   }
 
@@ -512,11 +569,22 @@ class Component extends DCLogic {
 
     const events=this.EVENTS.map(e=>{
       const sel=s.cardDates[e.id]||'';
-      return { id:e.id, title:e.title, venue:e.venue, category:e.category, initial:e.initial, dates:e.dates,
+      const dates=e.dates.map(d=> this.isSoldOut(e.id,d.iso) ? {iso:d.iso, label:d.label+' · AGOTADO'} : d);
+      return { id:e.id, title:e.title, venue:e.venue, category:e.category, initial:e.initial, dates,
         posterStyle:'background-image:url('+e.poster+');background-size:cover;background-position:center',
         selectedDate:sel, showBuy:!!sel,
         onSelect:(ev2)=>{ const v=ev2.target.value; this.setState(st=>({cardDates:{...st.cardDates,[e.id]:v}})); },
-        onBuy:()=>{ const iso=this.state.cardDates[e.id]; this.setState({selectedEventId:e.id, selectedDateIso:iso, screen:'purchase'}); if(typeof window!=='undefined') window.scrollTo(0,0); }
+        onBuy:()=>{
+          const iso=this.state.cardDates[e.id];
+          if(this.isSoldOut(e.id, iso)){
+            const d=e.dates.find(x=>x.iso===iso);
+            this.setState({soldOutNotice:{title:e.title, dateLabel:d?d.label:''}});
+            return;
+          }
+          this.setState({selectedEventId:e.id, selectedDateIso:iso, screen:'purchase'});
+          this.startAvailWatch(e.id, iso);
+          if(typeof window!=='undefined') window.scrollTo(0,0);
+        }
       };
     });
 
@@ -558,10 +626,23 @@ class Component extends DCLogic {
       isPayment:s.screen==='payment', isConfirmation:s.screen==='confirmation', notLanding:s.screen!=='landing',
       steps:this.buildSteps(),
       onVerEventos:()=>this.go('events'),
-      onHome:()=>this.go('landing'),
-      onBackEvents:()=>this.go('events'),
+      onHome:()=>{ this.clearAvailWatch(); this.go('landing'); },
+      onBackEvents:()=>{ this.clearAvailWatch(); this.go('events'); },
       onBackPurchase:()=>this.go('purchase'),
       onReset:()=>this.reset(),
+
+      showSoldOut: !!s.soldOutNotice,
+      soldOutTitle: s.soldOutNotice?s.soldOutNotice.title:'',
+      soldOutDateLabel: s.soldOutNotice?s.soldOutNotice.dateLabel:'',
+      onDismissSoldOut:()=>this.setState({soldOutNotice:null}),
+
+      showPayError: !!s.paymentError,
+      payErrorText: s.paymentError||'',
+      onDismissPayError:()=>this.setState({paymentError:null}),
+
+      showAvailChanged: s.availChanged,
+      onRefreshAvail:()=>this.refreshAvailability(),
+      onDismissAvail:()=>{ this.clearAvailWatch(); this.setState({availChanged:false, selectedEventId:null, selectedDateIso:null, quantities:{General:0, VIP:0, Platea:0}, screen:'events'}); if(typeof window!=='undefined') window.scrollTo(0,0); },
 
       events,
 
